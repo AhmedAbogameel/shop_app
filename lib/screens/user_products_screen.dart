@@ -10,16 +10,15 @@ class UserProductsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final productsData = Provider.of<ProductsProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
-        title:const Text('Your Products'),
+        title: const Text('Your Products'),
         actions: <Widget>[
           IconButton(
-            icon:const Icon(Icons.add),
-            onPressed: (){
+            icon: const Icon(Icons.add),
+            onPressed: () {
               Navigator.pushNamed(context, EditProductScreen.routeName);
             },
           ),
@@ -27,16 +26,20 @@ class UserProductsScreen extends StatelessWidget {
       ),
       drawer: AppDrawer(),
       body: Padding(
-          padding: EdgeInsets.all(8),
-          child: ListView.builder(
-            itemCount: productsData.items.length,
-            itemBuilder: (_ , i)=> Column(
-              children: <Widget>[
-                UserProductItem(productsData.items[i].title, productsData.items[i].imageUrl),
-                Divider(),
-              ],
-            ),
+        padding: EdgeInsets.all(8),
+        child: ListView.builder(
+          itemCount: productsData.items.length,
+          itemBuilder: (_, i) => Column(
+            children: <Widget>[
+              UserProductItem(
+                productsData.items[i].id,
+                productsData.items[i].title,
+                productsData.items[i].imageUrl,
+              ),
+              Divider(),
+            ],
           ),
+        ),
       ),
     );
   }
