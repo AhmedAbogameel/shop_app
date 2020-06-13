@@ -40,6 +40,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   var _isInit = true;
+  var _isLoading = false;
   var _initValues = {
     'title': '',
     'description': '',
@@ -84,14 +85,34 @@ class _EditProductScreenState extends State<EditProductScreen> {
     final isValid = _form.currentState.validate();
     if (!isValid) return;
     _form.currentState.save();
+    setState(() {
+      _isLoading = true;
+    });
     if (_editedProduct.id != null) {
       Provider.of<ProductsProvider>(context, listen: false)
           .updateProduct(_editedProduct.id, _editedProduct);
     } else {
       Provider.of<ProductsProvider>(context, listen: false)
-          .addProduct(_editedProduct);
+          .addProduct(_editedProduct).catchError((error){
+            return showDialog(context: context,builder: (ctx)=> AlertDialog(
+              title: Text('An error occurred!'),
+              content: Text('Something went wrong.'),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('Okay'),
+                  onPressed: (){
+                    Navigator.pop(ctx);
+                  },
+                ),
+              ],
+            ));
+      }).then((_) {
+            setState(() {
+              _isLoading = false;
+            });
+            Navigator.pop(context);
+          });
     }
-    Navigator.pop(context);
   }
 
   @override
@@ -103,7 +124,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
           IconButton(icon: Icon(Icons.save), onPressed: _saveForm)
         ],
       ),
-      body: Padding(
+      body: _isLoading ?
+      Center(
+        child: CircularProgressIndicator(),
+      )
+          :Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _form,
