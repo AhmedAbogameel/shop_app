@@ -91,7 +91,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     if (_editedProduct.id != null) {
       Provider.of<ProductsProvider>(context, listen: false)
           .updateProduct(_editedProduct.id, _editedProduct);
-    } else {
+    } else{
       Provider.of<ProductsProvider>(context, listen: false)
           .addProduct(_editedProduct).catchError((error){
             return showDialog(context: context,builder: (ctx)=> AlertDialog(
